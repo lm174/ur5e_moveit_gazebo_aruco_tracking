@@ -1,0 +1,44 @@
+<launch>
+
+    <!-- ============================================================ -->
+    <!-- 0. 需要先启动的东西（如果还没起来）                             -->
+    <!--    roslaunch ur5e_gazebo ur5e_handeye_calibration.launch      -->
+    <!--    或至少:                                                    -->
+    <!--      roslaunch ur_gazebo ur5e_bringup.launch                  -->
+    <!--      roslaunch ur5e_gazebo aruco_single.launch                -->
+    <!-- ============================================================ -->
+
+    <!-- ============================================================ -->
+    <!-- 1. 发布手眼标定 TF                                            -->
+    <!--    用 <group ns> 包裹 param + node，和 easy_handeye 官方对齐   -->
+    <!--    publish.py 用 rospy.get_param('inverse') 查相对路径，       -->
+    <!--    所以 param 必须在 group ns 下（不是 node 私有 param！）      -->
+    <!-- ============================================================ -->
+    <group ns="ur5e_handeye_eye_on_hand">
+
+        <param name="eye_on_hand" value="true" />
+        <param name="inverse" value="false" />
+        <param name="robot_effector_frame" value="tool0" />
+        <param name="tracking_base_frame"  value="camera_link" />
+        <param name="calibration_file"
+               value="$(find ur5e_gazebo)/config/ur5e_handeye_eye_on_hand.yaml" />
+
+        <node name="publish_handeye_tf"
+              pkg="easy_handeye"
+              type="publish.py"
+              output="screen" />
+    </group>
+
+    <!-- ============================================================ -->
+    <!-- 2. UR5e 跟随节点                                              -->
+    <!-- ============================================================ -->
+    <node pkg="ur5e_control"
+          type="aruco_follower"
+          name="aruco_follower_node"
+          output="screen">
+
+        <param name="camera_distance" value="0.81" />
+        <param name="loop_rate"       value="3.0" />
+    </node>
+
+</launch>

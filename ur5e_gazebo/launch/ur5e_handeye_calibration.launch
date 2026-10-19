@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="namespace_prefix" default="ur5e_handeye" />
+    <arg name="eye_on_hand" default="true" />
+
+    <arg name="start_gazebo"  default="true" />
+    <arg name="start_aruco"  default="true" />
+    <arg name="start_rviz"   default="false" />
+
+    <param name="use_sim_time" value="true" />
+
+    <!-- ============================================================ -->
+    <!-- 1. Gazebo + UR5e                                             -->
+    <!-- ============================================================ -->
+    <include if="$(arg start_gazebo)" file="$(find ur_gazebo)/launch/ur5e_bringup.launch" />
+
+    <!-- ============================================================ -->
+    <!-- 2. ArUco marker detection (our Python node)                  -->
+    <!--    Publishes TF: camera_link → aruco_marker_frame            -->
+    <!-- ============================================================ -->
+    <include if="$(arg start_aruco)" file="$(find ur5e_gazebo)/launch/aruco_single.launch" />
+
+    <!-- ============================================================ -->
+    <!-- 3. easy_handeye calibration core                             -->
+    <!--                                                              -->
+    <!--    Eye-on-hand 语义 (camera on tool0, marker fixed in world): -->
+    <!--      robot_base_frame     = base_link     (机器人基座)        -->
+    <!--      robot_effector_frame = tool0         (法兰/末端)          -->
+    <!--      tracking_base_frame  = camera_link  (相机坐标系)         -->
+    <!--      tracking_marker_frame= aruco_marker_frame (marker坐标系) -->
+    <!--                                                              -->
+    <!--    标完后得到: tool0 → camera_link (手眼外参)                  -->
+    <!-- ============================================================ -->
+    <include file="$(find easy_handeye)/launch/calibrate.launch">
+        <arg name="namespace_prefix" value="$(arg namespace_prefix)" />
+        <arg name="eye_on_hand"      value="$(arg eye_on_hand)" />
+
+        <arg name="robot_base_frame"      value="base_link" />
+        <arg name="robot_effector_frame"  value="tool0" />
+        <arg name="tracking_base_frame"   value="camera_link" />
+        <arg name="tracking_marker_frame" value="aruco_marker_frame" />
+
+        <!-- ur.xacro 已经在发 tool0→camera_link，不能再发 dummy -->
+        <arg name="publish_dummy" value="false" />
+
+        <!-- Gazebo 里手动拖机器人采样，不用 MoveIt 自动动 -->
+        <arg name="freehand_robot_movement" value="true" />
+
+        <arg name="start_rviz"            value="$(arg start_rviz)" />
+        <arg name="start_sampling_gui"    value="true" />
+    </include>
+
+</launch>

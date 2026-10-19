@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+
+    <param name="use_sim_time" value="true"/>
+
+    <arg name="markerId"        default="23"/>
+    <arg name="markerSize"      default="0.5"/>
+    <arg name="marker_frame"    default="aruco_marker_frame"/>
+
+    <node pkg="ur5e_gazebo" type="aruco_single_py.py" name="aruco_single" output="screen">
+        <param name="marker_id"  value="$(arg markerId)"/>
+        <param name="marker_size" value="$(arg markerSize)"/>
+    </node>
+
+</launch>
