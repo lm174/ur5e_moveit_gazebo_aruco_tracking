@@ -98,20 +98,7 @@ rosrun ur5e_gazebo ur5e_aruco_tracker
 rosrun ur5e_gazebo aruco_single_py.py
 ```
 
-The UR5e arm will plan trajectories and follow the Aruco marker automatically.
 
-## Project Structure
-
-```
-ur5e_gazebo/
-├── launch/                 # Launch files for simulation, tracking and handeye loading
-├── urdf/                   # Modified UR5e xacro with mounted monocular camera
-├── config/                 # Hand-eye calibration yaml result
-├── scripts/                # Python scripts: marker generation, aruco detection
-├── src/                    # C++ source code for MoveIt tracking node
-├── CMakeLists.txt
-└── package.xml
-```
 <img width="1381" height="1170" alt="2026-10-17-13-30-20-image" src="https://github.com/user-attachments/assets/3710067f-c94f-4341-8471-4e279cd3f3dd" />
 <img width="1018" height="786" alt="2026-10-17-13-48-02-image" src="https://github.com/user-attachments/assets/677c8b17-d5d3-472b-8dc6-d9f7da5951b8" />
 <img width="1646" height="1014" alt="2026-10-17-13-45-29-image" src="https://github.com/user-attachments/assets/1aa69815-b24d-4b8c-aa56-409c7afcb0da" />
